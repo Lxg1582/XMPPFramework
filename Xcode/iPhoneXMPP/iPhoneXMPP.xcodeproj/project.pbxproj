@@ -37,6 +37,8 @@
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		202FF6E91917FEE4005081F5 /* XMPPProxyResolver.m in Sources */ = {isa = PBXBuildFile; fileRef = 202FF6E81917FEE4005081F5 /* XMPPProxyResolver.m */; };
+		202FF6EC19180764005081F5 /* XMPPDeviceProxySettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 202FF6EB19180764005081F5 /* XMPPDeviceProxySettings.m */; };
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		28AD73600D9D9599002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainWindow.xib */; };
 		28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* RootViewController.m */; };
@@ -190,6 +192,10 @@
 		1D3623250D0F684500981E51 /* iPhoneXMPPAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iPhoneXMPPAppDelegate.m; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* iPhoneXMPP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iPhoneXMPP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		202FF6E71917FEE4005081F5 /* XMPPProxyResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMPPProxyResolver.h; path = ../../Utilities/XMPPProxyResolver.h; sourceTree = "<group>"; };
+		202FF6E81917FEE4005081F5 /* XMPPProxyResolver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPProxyResolver.m; path = ../../Utilities/XMPPProxyResolver.m; sourceTree = "<group>"; };
+		202FF6EA19180764005081F5 /* XMPPDeviceProxySettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPDeviceProxySettings.h; sourceTree = "<group>"; };
+		202FF6EB19180764005081F5 /* XMPPDeviceProxySettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPDeviceProxySettings.m; sourceTree = "<group>"; };
 		2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		28A0AAE50D9B0CCF005BE974 /* iPhoneXMPP_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iPhoneXMPP_Prefix.pch; sourceTree = "<group>"; };
 		28AD735F0D9D9599002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
@@ -703,6 +709,10 @@
 				DCC0BEEA1301CE3D00EC45D2 /* GCDMulticastDelegate.m */,
 				DCC0BEE51301CE3D00EC45D2 /* DDList.h */,
 				DCC0BEE61301CE3D00EC45D2 /* DDList.m */,
+				202FF6E71917FEE4005081F5 /* XMPPProxyResolver.h */,
+				202FF6E81917FEE4005081F5 /* XMPPProxyResolver.m */,
+				202FF6EA19180764005081F5 /* XMPPDeviceProxySettings.h */,
+				202FF6EB19180764005081F5 /* XMPPDeviceProxySettings.m */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -1236,6 +1246,7 @@
 				070400A81347CB520092A737 /* XMPPvCardTempLabel.m in Sources */,
 				070400A91347CB520092A737 /* XMPPvCardTempModule.m in Sources */,
 				070400AA1347CB520092A737 /* XMPPvCardTempTel.m in Sources */,
+				202FF6E91917FEE4005081F5 /* XMPPProxyResolver.m in Sources */,
 				070400AD1347CB520092A737 /* NSDate+XMPPDateTimeProfiles.m in Sources */,
 				070400AE1347CB520092A737 /* XMPPDateTimeProfiles.m in Sources */,
 				070400B01347CB520092A737 /* XMPPCapabilities.xcdatamodel in Sources */,
@@ -1269,6 +1280,7 @@
 				DC90AC6A147C28850022DF52 /* DDTTYLogger.m in Sources */,
 				DC90AC6B147C28850022DF52 /* ContextFilterLogFormatter.m in Sources */,
 				DC90AC6C147C28850022DF52 /* DispatchQueueLogFormatter.m in Sources */,
+				202FF6EC19180764005081F5 /* XMPPDeviceProxySettings.m in Sources */,
 				DCC22139149A61F000736DC1 /* XMPPRoom.xcdatamodeld in Sources */,
 				DCC2213A149A61F000736DC1 /* XMPPRoomCoreDataStorage.m in Sources */,
 				DCC2213B149A61F000736DC1 /* XMPPRoomMessageCoreDataStorageObject.m in Sources */,

@@ -27,6 +27,7 @@
 #endif
 
 extern NSString *const XMPPStreamErrorDomain;
+extern NSString *const XMPPHTTPProxyTunnelErrorDomain;
 
 typedef NS_ENUM(NSUInteger, XMPPStreamErrorCode) {
 	XMPPStreamInvalidType,       // Attempting to access P2P methods in a non-P2P stream, or vice-versa
@@ -40,6 +41,10 @@ typedef NS_ENUM(NSUInteger, XMPPStreamStartTLSPolicy) {
     XMPPStreamStartTLSPolicyAllowed,   // TLS will be used if the server requires it
     XMPPStreamStartTLSPolicyPreferred, // TLS will be used if the server offers it
     XMPPStreamStartTLSPolicyRequired   // TLS will be used if the server offers it, else the stream won't connect
+};
+
+typedef NS_ENUM(NSUInteger, XMPPHTTPProxyErrorCode) {
+  XMPPHTTPProxyErrorCodeProxyReturnedHTTPErrorforCONNECT
 };
 
 extern const NSTimeInterval XMPPStreamTimeoutNone;

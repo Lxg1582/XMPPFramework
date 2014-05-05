@@ -5,6 +5,7 @@
 #import "XMPPIDTracker.h"
 #import "XMPPSRVResolver.h"
 #import "NSData+XMPP.h"
+#import "XMPPProxyResolver.h"
 
 #import <objc/runtime.h>
 #import <libkern/OSAtomic.h>
@@ -44,11 +45,18 @@
 #define TAG_XMPP_WRITE_STREAM       201
 #define TAG_XMPP_WRITE_RECEIPT      202
 
+// HTTP Proxy Tunnel CONNECT Tag
+#define TAG_XMPP_HTTP_PROXY_CONNECT 900
+
+// HTTP Proxy Tunnel CONNECT timeout
+#define TIMEOUT_HTTP_PROXY_CONNECT 30.0
+
 // Define the timeouts (in seconds) for SRV
 #define TIMEOUT_SRV_RESOLUTION 30.0
 
 NSString *const XMPPStreamErrorDomain = @"XMPPStreamErrorDomain";
 NSString *const XMPPStreamDidChangeMyJIDNotification = @"XMPPStreamDidChangeMyJID";
+NSString *const XMPPHTTPProxyTunnelErrorDomain = @"XMPPHTTPProxyTunnelErrorDomain";
 
 const NSTimeInterval XMPPStreamTimeoutNone = -1;
 
@@ -134,6 +142,11 @@ enum XMPPStreamConfig
 	XMPPSRVResolver *srvResolver;
 	NSArray *srvResults;
 	NSUInteger srvResultsIndex;
+  
+  XMPPProxyResolver *proxyResolver;
+  NSArray *HTTPProxyList;
+  NSInteger currentHTTPProxyIndex;
+  BOOL attemptingToOpenTunnel;
     
     XMPPIDTracker *idTracker;
 	
@@ -3863,6 +3876,102 @@ enum XMPPStreamConfig
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark XMPPProxyResolver Delegate
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+- (void)tryNextHTTPProxy {
+  NSAssert(dispatch_get_specific(xmppQueueTag), @"Invoked on incorrect queue");
+	
+	XMPPLogTrace();
+	
+  attemptingToOpenTunnel = YES;
+	NSError *connectError = nil;
+	BOOL success = NO;
+	
+	while (currentHTTPProxyIndex < [HTTPProxyList count])
+	{
+		NSDictionary *proxy = HTTPProxyList[currentHTTPProxyIndex];
+		NSString *proxyHost = proxy[(NSString *)kCFProxyHostNameKey];
+    // TODO: Make sure this cast is correct.
+		UInt16 proxyPort    = [proxy[(NSString *)kCFProxyPortNumberKey] integerValue];
+		
+		success = [self connectToHost:proxyHost onPort:proxyPort withTimeout:XMPPStreamTimeoutNone error:&connectError];
+		
+		if (success)
+		{
+			break;
+		}
+		else
+		{
+			currentHTTPProxyIndex++;
+		}
+	}
+	
+	if (!success)
+	{
+    [self cleanUpAfterNotAbleToEstablishHTTPProxyTunnelWithError:connectError];
+	}
+}
+
+- (void)xmppProxyResolver:(XMPPProxyResolver *)sender didRetrieveHTTPProxyList:(NSArray *)proxyList {
+  NSAssert(dispatch_get_specific(xmppQueueTag), @"Invoked on incorrect queue");
+	
+	if (sender != proxyResolver) return;
+	
+	XMPPLogTrace();
+	
+	HTTPProxyList = [proxyList copy];
+	currentHTTPProxyIndex = 0;
+	
+	state = STATE_XMPP_CONNECTING;
+	
+  attemptingToOpenTunnel = YES;
+	[self tryNextHTTPProxy];
+}
+
+- (void)xmppProxyResolver:(XMPPProxyResolver *)sender didNotRetrieveDueToError:(NSError *)error {
+  [self cleanUpAfterNotAbleToEstablishHTTPProxyTunnelWithError:error];
+}
+
+- (void)cleanUpAfterNotAbleToEstablishHTTPProxyTunnelWithError:(NSError *)connectError {
+  [self endConnectTimeout];
+  [self clearUpHTTPProxyState];
+  [multicastDelegate xmppStreamDidDisconnect:self withError:connectError];
+}
+
+- (void)clearUpHTTPProxyState {
+  attemptingToOpenTunnel = NO;
+  currentHTTPProxyIndex = 0;
+  HTTPProxyList = nil;
+  proxyResolver = nil;
+}
+
+- (void)tunnelOpenedOnSocket:(GCDAsyncSocket *)sock {
+  [self clearUpHTTPProxyState];
+  
+  // TODO 2: This was copied and pasted from socket:didConnectToHost:port: for simplicity, refactor.
+  [multicastDelegate xmppStream:self socketDidConnect:sock];
+	
+	srvResolver = nil;
+	srvResults = nil;
+	
+	// Are we using old-style SSL? (Not the upgrade to TLS technique specified in the XMPP RFC)
+	if ([self isSecure])
+	{
+		// The connection must be secured immediately (just like with HTTPS)
+		[self startTLS];
+	}
+	else
+	{
+		[self startNegotiation];
+	}
+}
+
+- (void)tunnelFailedToOpenOnSocket:(GCDAsyncSocket *)sock {
+  [self disconnect];
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark AsyncSocket Delegate
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -3896,7 +4005,19 @@ enum XMPPStreamConfig
 		}
 	}
 	#endif
-	
+  
+  if (attemptingToOpenTunnel) {
+    NSString *HTTPConnectRequest =
+        [NSString stringWithFormat:@"CONNECT %@:%i HTTP/1.1\r\nHost: %@:%i \r\n\r\n", hostName, hostPort, hostName, hostPort];
+    // Write HTTP CONNECT request to proxy.
+    [sock writeData:[HTTPConnectRequest dataUsingEncoding:NSUTF8StringEncoding]
+        withTimeout:TIMEOUT_HTTP_PROXY_CONNECT
+                tag:TAG_XMPP_HTTP_PROXY_CONNECT];
+    // Queue up the response.
+    [sock readDataWithTimeout:TIMEOUT_HTTP_PROXY_CONNECT tag:TAG_XMPP_HTTP_PROXY_CONNECT];
+    return;
+  }
+  
 	[multicastDelegate xmppStream:self socketDidConnect:sock];
 	
 	srvResolver = nil;
@@ -3968,6 +4089,16 @@ enum XMPPStreamConfig
 	// This method is invoked on the xmppQueue.
 	
 	XMPPLogTrace();
+  
+  if (tag == TAG_XMPP_HTTP_PROXY_CONNECT) {
+    NSString *stringFromSocket = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    if ([stringFromSocket rangeOfString:@"200"].location != NSNotFound) {
+      [self tunnelOpenedOnSocket:sock];
+    } else {
+      [self tunnelFailedToOpenOnSocket:sock];
+    }
+    return;
+  }
 	
     if (self.shouldReceiveDataResetKeepAliveWatchdog) {
 	lastSendReceiveTime = [NSDate timeIntervalSinceReferenceDate];
@@ -4038,8 +4169,20 @@ enum XMPPStreamConfig
 	{
 		[self tryNextSrvResult];
 	}
+  else if ([hostName length] > 0 && !attemptingToOpenTunnel)
+  {
+    attemptingToOpenTunnel = YES;
+    proxyResolver = [[XMPPProxyResolver alloc] initWithdDelegate:self delegateQueue:xmppQueue resolverQueue:NULL];
+    [proxyResolver retrieveHTTPProxyListFromDeviceSettingsForTargetHost:hostName];
+  }
+  else if (HTTPProxyList && (++currentHTTPProxyIndex < [HTTPProxyList count]))
+	{
+		[self tryNextHTTPProxy];
+	}
 	else
 	{
+    [self clearUpHTTPProxyState];
+    
 		// Update state
 		state = STATE_XMPP_DISCONNECTED;
 		
