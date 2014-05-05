@@ -178,6 +178,15 @@ extern const NSTimeInterval XMPPStreamTimeoutNone;
 @property (readwrite, assign) NSTimeInterval keepAliveInterval;
 
 /**
+ * By default, the keep alive watchdog will be tripped when a client receives
+ * or sends message data. This property allows a client to configure whether
+ * or not receiving data should trip the watchdog, or limit it to only sent data.
+ *
+ * Defaults to YES.
+ **/
+@property (readwrite, assign) BOOL shouldReceiveDataResetKeepAliveWatchdog;
+
+/**
  * The keep-alive mechanism sends whitespace which is ignored by the xmpp protocol.
  * The default whitespace character is a space (' ').
  * 

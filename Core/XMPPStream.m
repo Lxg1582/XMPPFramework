@@ -123,6 +123,7 @@ enum XMPPStreamConfig
 	NSXMLElement *rootElement;
 	
 	NSTimeInterval keepAliveInterval;
+    BOOL shouldReceiveDataResetKeepAliveWatchdog;
 	dispatch_source_t keepAliveTimer;
 	NSTimeInterval lastSendReceiveTime;
 	NSData *keepAliveData;
@@ -217,6 +218,8 @@ enum XMPPStreamConfig
     idTracker = [[XMPPIDTracker alloc] initWithStream:self dispatchQueue:xmppQueue];
 	
 	receipts = [[NSMutableArray alloc] init];
+    
+    shouldReceiveDataResetKeepAliveWatchdog = YES;
 }
 
 /**
@@ -564,6 +567,38 @@ enum XMPPStreamConfig
 		block();
 	else
 		dispatch_async(xmppQueue, block);
+}
+
+- (BOOL)shouldReceiveDataResetKeepAliveWatchdog
+{
+    __block BOOL result = NO;
+    
+    dispatch_block_t block = ^{
+        result = shouldReceiveDataResetKeepAliveWatchdog;
+    };
+    
+    if (dispatch_get_specific(xmppQueueTag))
+        block();
+    else
+        dispatch_sync(xmppQueue, block);
+    
+    return result;
+}
+
+- (void)setShouldReceiveDataResetKeepAliveWatchdog:(BOOL)flag
+{
+    dispatch_block_t block = ^{
+        shouldReceiveDataResetKeepAliveWatchdog = flag;
+    };
+    
+    if (dispatch_get_specific(xmppQueueTag))
+    {
+        block();
+    }
+    else
+    {
+        dispatch_async(xmppQueue, block);
+    }
 }
 
 - (char)keepAliveWhitespaceCharacter
@@ -3897,7 +3932,9 @@ enum XMPPStreamConfig
 	
 	XMPPLogTrace();
 	
+    if (self.shouldReceiveDataResetKeepAliveWatchdog) {
 	lastSendReceiveTime = [NSDate timeIntervalSinceReferenceDate];
+    }
 	numberOfBytesReceived += [data length];
 	
 	XMPPLogRecvPre(@"RECV: %@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);

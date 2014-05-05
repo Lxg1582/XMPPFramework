@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>DA84EECE-3553-4564-8286-CE037D1F10B3</string>
+	<key>IDESourceControlProjectName</key>
+	<string>iPhoneXMPP</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>3469A9BC-D993-4B91-ACC6-B77FDC08F01A</key>
+		<string>ssh://github.com/mutualmobile/XMPPFramework.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Xcode/iPhoneXMPP/iPhoneXMPP.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>3469A9BC-D993-4B91-ACC6-B77FDC08F01A</key>
+		<string>../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/mutualmobile/XMPPFramework.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>3469A9BC-D993-4B91-ACC6-B77FDC08F01A</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>3469A9BC-D993-4B91-ACC6-B77FDC08F01A</string>
+			<key>IDESourceControlWCCName</key>
+			<string>xmppframework-mm</string>
+		</dict>
+	</array>
+</dict>
+</plist>
