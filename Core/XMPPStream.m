@@ -147,6 +147,7 @@ enum XMPPStreamConfig
   NSArray *HTTPProxyList;
   NSInteger currentHTTPProxyIndex;
   BOOL attemptingToOpenTunnel;
+  BOOL tunnelOpen;
     
     XMPPIDTracker *idTracker;
 	
@@ -3948,6 +3949,7 @@ enum XMPPStreamConfig
 
 - (void)tunnelOpenedOnSocket:(GCDAsyncSocket *)sock {
   [self clearUpHTTPProxyState];
+  tunnelOpen = YES;
   
   // TODO 2: This was copied and pasted from socket:didConnectToHost:port: for simplicity, refactor.
   [multicastDelegate xmppStream:self socketDidConnect:sock];
@@ -4169,7 +4171,7 @@ enum XMPPStreamConfig
 	{
 		[self tryNextSrvResult];
 	}
-  else if ([hostName length] > 0 && !attemptingToOpenTunnel)
+  else if ([hostName length] > 0 && !attemptingToOpenTunnel && !tunnelOpen && state == STATE_XMPP_CONNECTING)
   {
     attemptingToOpenTunnel = YES;
     proxyResolver = [[XMPPProxyResolver alloc] initWithdDelegate:self delegateQueue:xmppQueue resolverQueue:NULL];
@@ -4182,6 +4184,7 @@ enum XMPPStreamConfig
 	else
 	{
     [self clearUpHTTPProxyState];
+    tunnelOpen = NO;
     
 		// Update state
 		state = STATE_XMPP_DISCONNECTED;
