@@ -74,7 +74,8 @@ void proxyCallback(void *client,
       if (proxyList) {
         
         for (NSDictionary *proxy in PACProxyList) {
-          if ([proxyType isEqualToString:(NSString *)kCFProxyTypeHTTP]) {
+          NSString *PACProxyType = proxy[(NSString *)kCFProxyTypeKey];
+          if ([PACProxyType isEqualToString:(NSString *)kCFProxyTypeHTTP]) {
             [HTTPProxyList addObject:proxy];
           }
         }
