@@ -44,8 +44,8 @@ void proxyCallback(void *client,
     return;
   }
   // Get proxy list.
-  NSArray *proxyList = (NSArray *)CFBridgingRelease(CFNetworkCopyProxiesForURL((CFURLRef)CFBridgingRetain(targetURL),
-                                                                               (CFDictionaryRef)CFBridgingRetain(proxyDict)));
+  NSArray *proxyList = (NSArray *)CFBridgingRelease(CFNetworkCopyProxiesForURL((__bridge CFURLRef)targetURL,
+                                                                               (__bridge CFDictionaryRef)proxyDict));
   if (!proxyList) {
     [self callBackWithErrorUsingCompletionBlock:onCompletion];
     return;
