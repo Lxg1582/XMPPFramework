@@ -82,8 +82,8 @@ NSString *const XMPPProxyResolverErrorDomain = @"XMPPProxyResolverErrorDomain";
            {
              [theDelegate xmppProxyResolver:self didNotRetrieveDueToError:error];
            }
-           return;
          }});
+         return;
        }
        
        id theDelegate = delegate;
