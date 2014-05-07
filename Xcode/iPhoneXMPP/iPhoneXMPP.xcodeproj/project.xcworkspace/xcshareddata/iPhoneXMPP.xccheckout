@@ -5,36 +5,36 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>FA5BB7F5-EE36-469D-AA28-05BD9575C1F2</string>
+	<string>C5679E86-9194-4954-9075-CE2CA6DAB628</string>
 	<key>IDESourceControlProjectName</key>
 	<string>iPhoneXMPP</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>F23F9879-9E72-4429-8FA3-2F8B8C055F34</key>
-		<string>http://stash.t.mutualmobile.com/scm/bnp/nk_xmppframework.git</string>
+		<key>1A32DFA6-6968-42EF-8A50-EE495CF47FDF</key>
+		<string>ssh://github.com/mutualmobile/XMPPFramework.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>Xcode/iPhoneXMPP/iPhoneXMPP.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>F23F9879-9E72-4429-8FA3-2F8B8C055F34</key>
+		<key>1A32DFA6-6968-42EF-8A50-EE495CF47FDF</key>
 		<string>../../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>http://stash.t.mutualmobile.com/scm/bnp/nk_xmppframework.git</string>
+	<string>ssh://github.com/mutualmobile/XMPPFramework.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>F23F9879-9E72-4429-8FA3-2F8B8C055F34</string>
+	<string>1A32DFA6-6968-42EF-8A50-EE495CF47FDF</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>F23F9879-9E72-4429-8FA3-2F8B8C055F34</string>
+			<string>1A32DFA6-6968-42EF-8A50-EE495CF47FDF</string>
 			<key>IDESourceControlWCCName</key>
-			<string>nk_xmppframework</string>
+			<string>xmppframework-mm</string>
 		</dict>
 	</array>
 </dict>

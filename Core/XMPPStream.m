@@ -505,6 +505,23 @@ enum XMPPStreamConfig
 		dispatch_async(xmppQueue, block);
 }
 
+- (GCDAsyncSocket *)asyncSocket {
+  if (dispatch_get_specific(xmppQueueTag))
+	{
+		return asyncSocket;
+	}
+	else
+	{
+		__block GCDAsyncSocket *result;
+		
+		dispatch_sync(xmppQueue, ^{
+			result = asyncSocket;
+		});
+		
+		return result;
+	}
+}
+
 - (void)setMyJID:(XMPPJID *)newMyJID
 {
 	[self setMyJID_setByClient:newMyJID];

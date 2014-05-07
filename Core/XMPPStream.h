@@ -278,6 +278,8 @@ extern const NSTimeInterval XMPPStreamTimeoutNone;
 **/
 @property (readwrite, assign) BOOL enableBackgroundingOnSocket;
 
+@property (readonly, nonatomic, strong) GCDAsyncSocket *asyncSocket;
+
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
